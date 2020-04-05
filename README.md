@@ -2,7 +2,7 @@
 
 ## Live
 
-[Visual Dashboard page](https://vgrem.github.io/covid19vis/)
+[Visual Dashboard home page](https://vgrem.github.io/covid19vis/)
 
 ## Data sources
 

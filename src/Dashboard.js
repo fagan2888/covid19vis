@@ -127,9 +127,8 @@ export default function Dashboard(props) {
   //const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const reportCtx = useContext(ReportContext);
-  let reportDate = reportCtx.dataSource
-    ? reportCtx.dataSource.properties["ReportDate"]
-    : null;
+  const {dataSource} = reportCtx;
+  let reportDate = dataSource ? dataSource.properties["ReportDate"] : null;
   const options = {
     weekday: "long",
     year: "numeric",

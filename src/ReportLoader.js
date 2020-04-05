@@ -1,4 +1,18 @@
 import { dataSourceSettings } from "./ReportContext";
+import countries from "./datasources/ISO-3166-Countries";
+
+function resolveCountry(name) {
+  const country = countries.find((c) => c.name === name);
+  if (!country) {
+    console.log(name);
+    return {
+      name: name,
+      "alpha-2": null,
+      "alpha-3": null
+    };
+  }
+  return country;
+}
 
 export async function getLatestReport(daysOffset = 0) {
   dataSourceSettings.reportDate = new Date();
@@ -112,6 +126,8 @@ function normalizeRow(settings, cells) {
   if (Object.keys(settings.countryMapping).includes(countryVal)) {
     cells.CountryRegion = settings.countryMapping[countryVal];
   }
+  cells.CountryRegion = resolveCountry(cells.CountryRegion)
+
   for (let colName in settings.columnTypeMappings) {
     if (settings.columnTypeMappings[colName] === "number")
       cells[colName] = parseInt(cells[colName]);

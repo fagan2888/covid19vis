@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import { GeoJSON, useLeaflet } from "react-leaflet";
+import { useLeaflet } from "react-leaflet";
 import Legend from "./Legend";
+import TopoJSON from "./TopoJSON";
+import countries from "../datasources/countries.geo.json";
 
 export default function ReportLayer(props) {
-  const { reportDataSource, countriesDataSource } = props;
   const { map } = useLeaflet();
 
   const legendOptions = [
@@ -12,19 +13,19 @@ export default function ReportLayer(props) {
       background: "#d2e3fc",
     },
     {
-      minValue: 50,
+      minValue: 1000,
       background: "#8ab4f8",
     },
     {
-      minValue: 100,
+      minValue: 5000,
       background: "#4285f4",
     },
     {
-      minValue: 1000,
+      minValue: 50000,
       background: "#1967d2",
     },
     {
-      minValue: 10000,
+      minValue: 100000,
       background: "#174ea6",
     },
   ];
@@ -49,19 +50,18 @@ export default function ReportLayer(props) {
     };
   }
 
-  function getCountryStats(countryName) {
-    return reportDataSource.rows.find((item) => {
-      return item["CountryRegion"] === countryName;
+  function getCountryStats(countryCode) {
+    return props.dataSource.rows.find((item) => {
+      return item.CountryRegion["alpha-3"] === countryCode;
     });
   }
 
   function processFeature(feature, layer) {
-    const { name: countryName } = feature.properties;
-    const result = getCountryStats(countryName);
+    const result = getCountryStats(feature.id);
     if (result) {
       layer.setStyle({ fillColor: getReportColor(result) });
 
-      const popupContent = `<div><h3>${feature.properties.name}</h3>
+      const popupContent = `<div><h3>${result.CountryRegion.name}</h3>
           <div>Confirmed: ${result.Confirmed}</div>
           <div>Deaths: ${result.Deaths}</div>
           <div>Recovered: ${result.Recovered}</div>    
@@ -85,10 +85,10 @@ export default function ReportLayer(props) {
 
   return (
     <Fragment>
-      <GeoJSON
+      <TopoJSON
         onEachFeature={processFeature}
         style={getCountryStyle}
-        data={countriesDataSource}
+        data={countries}
       />
       <Legend options={legendOptions} />
     </Fragment>

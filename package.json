@@ -1,7 +1,7 @@
 {
   "homepage": "http://vgrem.github.io/covid19vis",
   "name": "covid-19-visualization",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "scripts": {
     "start": "react-scripts start",
@@ -21,7 +21,9 @@
     "react-dom": "latest",
     "react-leaflet": "^2.6.3",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "svg-country-flags": "^1.2.7",
+    "topojson-client": "^3.1.0"
   },
   "browserslist": {
     "production": [

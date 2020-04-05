@@ -10,7 +10,10 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
+import CountryIcon from "./CountryIcon";
 import { ReportContext } from "./ReportContext";
+
+
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -23,6 +26,11 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
+  if(orderBy === "CountryRegion"){
+    return order === "desc"
+    ? (a, b) => descendingComparator(a[orderBy], b[orderBy], "name")
+    : (a, b) => -descendingComparator(a[orderBy], b[orderBy], "name");
+  }
   return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -48,6 +56,7 @@ const headCells = [
   { id: "Deaths", numeric: true, label: "Deaths" },
   { id: "Recovered", numeric: true, label: "Recovered" },
 ];
+
 
 function SortableTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
@@ -117,13 +126,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ReportView() {
   const reportCtx = useContext(ReportContext);
+  const { dataSource: reportTable } = reportCtx;
+  const {rows} = reportTable; 
   const classes = useStyles();
   const [order, setOrder] = React.useState("desc");
   const [orderBy, setOrderBy] = React.useState("Confirmed");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const rows = reportCtx.dataSource.rows;
-
+  
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -163,10 +173,17 @@ export default function ReportView() {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
+
+                  let countryCode = null;
+                  if(row.CountryRegion["alpha-2"]){
+                      countryCode = row.CountryRegion["alpha-2"].toLowerCase();
+                  }
+
                   return (
                     <TableRow key={index} hover tabIndex={-1}>
                       <TableCell component="th" scope="row">
-                        {row.CountryRegion}
+                        {countryCode && <CountryIcon code={countryCode} />}
+                        {row.CountryRegion.name}
                       </TableCell>
                       <TableCell align="right">{row.Confirmed}</TableCell>
                       <TableCell align="right">{row.Deaths}</TableCell>

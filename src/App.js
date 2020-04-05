@@ -1,10 +1,10 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { ReportContext} from "./ReportContext";
+import { ReportContext } from "./ReportContext";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Dashboard from "./Dashboard";
-import MapView from "./MapView";
+import MapView from "./map/MapView";
 import ReportView from "./ReportView";
 import { getLatestReport } from "./ReportLoader";
 
@@ -41,7 +41,7 @@ export default function App() {
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <ReportContext.Provider
         value={{
-          dataSource: reportDataSource,
+          dataSource: reportDataSource
         }}
       >
         <Dashboard>

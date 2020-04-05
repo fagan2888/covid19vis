@@ -41,8 +41,16 @@ export const dataSourceSettings = {
   },
   countryMapping: {
     US: "United States of America",
-    '"Korea, South"': "South Korea",
-    Czechia: "Czech Republic",
+    '"Korea, South"': "Korea, Republic of",
+    Iran: "Iran (Islamic Republic of)",
+    Russia: "Russian Federation",
+    "United Kingdom": "United Kingdom of Great Britain and Northern Ireland",
+    Moldova: "Moldova, Republic of",
+    "Venezuela": "Venezuela (Bolivarian Republic of)",
+    "Syria": "Syrian Arab Republic",
+    "Taiwan*": "Taiwan, Province of China",
+    "Burma": "Myanmar",
+    "Bolivia": "Bolivia (Plurinational State of)"
   },
   preserveNames: true,
 };
