@@ -50,7 +50,8 @@ export const dataSourceSettings = {
     "Syria": "Syrian Arab Republic",
     "Taiwan*": "Taiwan, Province of China",
     "Burma": "Myanmar",
-    "Bolivia": "Bolivia (Plurinational State of)"
+    "Bolivia": "Bolivia (Plurinational State of)",
+    "Brunei": "Brunei Darussalam"
   },
   preserveNames: true,
 };

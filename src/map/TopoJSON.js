@@ -19,8 +19,8 @@ export default function TopoJSON(props) {
 
   useEffect(() => {
     const layer = layerRef.current.leafletElement;
-    addData(layer, props.data);
-  }, [props.data]);
+    addData(layer, data);
+  }, [data]);
 
   return <GeoJSON ref={layerRef} {...defProps} />;
 }

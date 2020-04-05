@@ -2,30 +2,34 @@ import * as L from "leaflet";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useLeaflet } from "react-leaflet";
+import Typography from "@material-ui/core/Typography";
 
 function LegendControl(props) {
   const { options } = props;
   function getBarStyle(opt) {
     return {
-      background: opt.background
+      background: opt.background,
     };
   }
 
   return (
     <div className="info legend">
-      <h4>Confirmed cases</h4>
+      <Typography variant="h6" component="h6">
+        Confirmed cases
+      </Typography>
       {options.map((opt, i) => {
+        
         return (
-          <div key={i}>
+          <Typography key={i} variant="subtitle1" gutterBottom>
             <i style={getBarStyle(opt)}></i>
             {i === options.length - 1 ? (
-              <span>{opt.minValue}+</span>
+              <span>{opt.minValue} +</span>
             ) : (
               <span>
-                {opt.minValue}&ndash;{options[i + 1].minValue}
+                {opt.minValue} &ndash; {options[i + 1].minValue}
               </span>
             )}
-          </div>
+          </Typography>
         );
       })}
     </div>

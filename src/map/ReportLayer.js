@@ -1,8 +1,38 @@
 import React, { Fragment } from "react";
+import ReactDOMServer from "react-dom/server";
 import { useLeaflet } from "react-leaflet";
+import Typography from "@material-ui/core/Typography";
 import Legend from "./Legend";
 import TopoJSON from "./TopoJSON";
+import CountryIcon from "../CountryIcon";
 import countries from "../datasources/countries.geo.json";
+
+function ReportPopup(props) {
+  const { report } = props;
+
+  let countryCode = null;
+  if (report.CountryRegion["alpha-2"]) {
+    countryCode = report.CountryRegion["alpha-2"].toLowerCase();
+  }
+
+  return (
+    <div>
+      <Typography variant="h6" component="h6">
+        {countryCode && <CountryIcon code={countryCode} />}
+        {report.CountryRegion.name}
+      </Typography>
+      <Typography variant="subtitle2" gutterBottom>
+        Confirmed: {report.Confirmed}
+      </Typography>
+      <Typography variant="subtitle2" gutterBottom>
+        Deaths: {report.Deaths}
+      </Typography>
+      <Typography variant="subtitle2" gutterBottom>
+        Recovered: {report.Recovered}
+      </Typography>
+    </div>
+  );
+}
 
 export default function ReportLayer(props) {
   const { map } = useLeaflet();
@@ -50,6 +80,16 @@ export default function ReportLayer(props) {
     };
   }
 
+  function showCountryStats(e) {
+    const layer = e.target;
+    layer.getPopup().setLatLng(e.latlng).openOn(map);
+  }
+
+  function hideCountryStats(e) {
+    const layer = e.target;
+    layer.closePopup();
+  }
+
   function getCountryStats(countryCode) {
     return props.dataSource.rows.find((item) => {
       return item.CountryRegion["alpha-3"] === countryCode;
@@ -60,23 +100,15 @@ export default function ReportLayer(props) {
     const result = getCountryStats(feature.id);
     if (result) {
       layer.setStyle({ fillColor: getReportColor(result) });
-
-      const popupContent = `<div><h3>${result.CountryRegion.name}</h3>
-          <div>Confirmed: ${result.Confirmed}</div>
-          <div>Deaths: ${result.Deaths}</div>
-          <div>Recovered: ${result.Recovered}</div>    
-      </div>`;
+      const popupContent = ReactDOMServer.renderToString(
+        <ReportPopup report={result} />
+      );
       layer.bindPopup(popupContent);
 
       layer.on({
-        mouseover: (e) => {
-          layer.getPopup().setLatLng(e.latlng).openOn(map);
-        },
-        mouseout: (e) => layer.closePopup(),
-        mousemove: (e) => {
-          //layer.closePopup();
-          layer.getPopup().setLatLng(e.latlng).openOn(map);
-        },
+        mouseover: showCountryStats,
+        mouseout: hideCountryStats,
+        mousemove: showCountryStats,
       });
     } else {
       //console.log(countryName);
