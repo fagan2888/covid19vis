@@ -1,41 +1,15 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 import { useLeaflet } from "react-leaflet";
-import Typography from "@material-ui/core/Typography";
+import * as L from "leaflet";
 import Legend from "./Legend";
+import ReportPopup from "./ReportPopup";
 import TopoJSON from "./TopoJSON";
-import CountryIcon from "../CountryIcon";
 import countries from "../datasources/countries.geo.json";
-
-function ReportPopup(props) {
-  const { report } = props;
-
-  let countryCode = null;
-  if (report.CountryRegion["alpha-2"]) {
-    countryCode = report.CountryRegion["alpha-2"].toLowerCase();
-  }
-
-  return (
-    <div>
-      <Typography variant="h6" component="h6">
-        {countryCode && <CountryIcon code={countryCode} />}
-        {report.CountryRegion.name}
-      </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        Confirmed: {report.Confirmed}
-      </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        Deaths: {report.Deaths}
-      </Typography>
-      <Typography variant="subtitle2" gutterBottom>
-        Recovered: {report.Recovered}
-      </Typography>
-    </div>
-  );
-}
 
 export default function ReportLayer(props) {
   const { map } = useLeaflet();
+  const layerRef = useRef(null);
 
   const legendOptions = [
     {
@@ -83,11 +57,21 @@ export default function ReportLayer(props) {
   function showCountryStats(e) {
     const layer = e.target;
     layer.getPopup().setLatLng(e.latlng).openOn(map);
+    layer.setStyle({
+      weight: 1,
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+      layer.bringToFront();
+    }
   }
 
   function hideCountryStats(e) {
     const layer = e.target;
     layer.closePopup();
+    layer.setStyle({
+      weight: 0.1,
+    });
   }
 
   function getCountryStats(countryCode) {
@@ -121,6 +105,7 @@ export default function ReportLayer(props) {
         onEachFeature={processFeature}
         style={getCountryStyle}
         data={countries}
+        ref={layerRef}
       />
       <Legend options={legendOptions} />
     </Fragment>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReportContext } from "./ReportContext";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -7,6 +7,7 @@ import Dashboard from "./Dashboard";
 import MapView from "./map/MapView";
 import ReportView from "./ReportView";
 import { getLatestReport } from "./ReportLoader";
+import { createBrowserHistory } from 'history';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,8 +38,10 @@ export default function App() {
     getReport();
   }, []);
 
+  const history = createBrowserHistory({forceRefresh:false});
+
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <HashRouter history={history}>
       <ReportContext.Provider
         value={{
           dataSource: reportDataSource
@@ -55,6 +58,6 @@ export default function App() {
           )}
         </Dashboard>
       </ReportContext.Provider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
